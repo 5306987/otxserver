@@ -95,6 +95,8 @@ const char* getReturnMessage(ReturnValue value);
 NameEval_t validateName(const std::string &name);
 void capitalizeWords(std::string &source);
 
+bool isCaskItem(uint16_t itemId);
+
 int64_t OTSYS_TIME();
 
 #endif
