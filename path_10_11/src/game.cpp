@@ -2300,7 +2300,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 			startDecay(item);
 		}
 
-		if ((item->getActionId() != 0) && !newWrapId && item->getID() == TRANSFORM_BOX_ID) {
+		if ((item->getActionId() != 0) && !newWrapId && item->getID() == TRANSFORM_BOX_ID) { //jlcvp - unacessible if
 			transformItem(item, item->getActionId()); // transforms the item
 			item->setSpecialDescription("Wrap it in your own house to create a <" + itemName + ">.");
 			addMagicEffect(item->getPosition(), CONST_ME_POFF);
@@ -2310,7 +2310,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 		// FOR ITEMS LOSING ACTIONID TO TRANSFORM
 		if (iiType.wrapContainer) {
 			Item* wrapContainer = transformItem(item, newWrapId);
-			if (newWrapId != 0 && item->getID() != TRANSFORM_BOX_ID) {
+			if (newWrapId != 0 && item->getID() != TRANSFORM_BOX_ID) { //jlcvp - another unacessible if
 				wrapContainer->setActionId(item->getID()); // Then you have to make a box adc if you have aid
 				wrapContainer->setSpecialDescription("Unwrap it in your own house to create a <" + itemName + ">.");
 				addMagicEffect(wrapContainer->getPosition(), CONST_ME_POFF);
@@ -2318,8 +2318,12 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 			}
 
 			if ((item->getActionId() != 0) && !newWrapId && item->getID() == TRANSFORM_BOX_ID) {
+				uint16_t hiddenCharges = item->getWeight();
 				transformItem(item, item->getActionId())->setSpecialDescription("Wrap it in your own house to create a <" + itemName + ">.");
 				addMagicEffect(item->getPosition(), CONST_ME_POFF);
+				if(hiddenCharges>0){
+					item->setCharges(hiddenCharges);
+				}
 				startDecay(item);
 			}
 		}
