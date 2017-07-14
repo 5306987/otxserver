@@ -1299,3 +1299,7 @@ bool isCaskItem(uint16_t itemId) {
 		   (itemId >= ITEM_MANA_CASK_START && itemId <= ITEM_MANA_CASK_END) ||
 		   (itemId >= ITEM_SPIRIT_CASK_START && itemId <= ITEM_SPIRIT_CASK_END);
 }
+
+bool isKegItem(uint16_t itemId){
+	return (itemId >= ITEM_KEG_START && itemId <= ITEM_KEG_END);
+}

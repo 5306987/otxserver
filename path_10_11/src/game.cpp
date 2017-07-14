@@ -5611,7 +5611,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, uint32_t offerId, uint8_t prod
 			}
 			else{
 				uint16_t pendingCount = tmp->count;
-				uint8_t packSize = (offer->type == STACKABLE_ITEM) ? 100 : 1;
+				uint8_t packSize = (offer->type == STACKABLE_ITEM) ? (isKegItem(tmp->productId)?500:100): 1;
 				IOAccount::removeCoins(player->getAccount(), offer->price);
 				IOAccount::registerTransaction(player->getAccount(), -1*offer->price, offer->name);
 
@@ -5623,6 +5623,9 @@ void Game::playerBuyStoreOffer(uint32_t playerId, uint32_t offerId, uint8_t prod
 						item = Item::CreateItem(TRANSFORM_BOX_ID, std::min<uint16_t>(packSize, pendingCount));
 						item->setActionId(tmp->productId);
 						item->setSpecialDescription("Unwrap it in your own house to create a <" + Item::items[tmp->productId].name + ">.");
+						if(isCaskItem(tmp->productId)){
+							item->setDate(std::min<uint16_t>(1000,pendingCount));
+						}
 					}else{
 						item = Item::CreateItem(tmp->productId, std::min<uint16_t>(packSize, pendingCount));
 					}
@@ -5634,7 +5637,12 @@ void Game::playerBuyStoreOffer(uint32_t playerId, uint32_t offerId, uint8_t prod
 						IOAccount::registerTransaction(player->getAccount(), -1*offer->price + (offer->price * (tmp->count - pendingCount))/tmp->count, offer->name);
 						return;
 					}
-					pendingCount-= std::min<uint16_t>(pendingCount,packSize);
+
+					if(isCaskItem(tmp->productId)){
+						pendingCount-=std::min<uint16_t>(1000,pendingCount);
+					}else{
+						pendingCount-= std::min<uint16_t>(pendingCount,packSize);
+					}
 				}
 
 				player->sendStorePurchaseSuccessful(message.str(), IOAccount::getCoinBalance(player->getAccount()));
